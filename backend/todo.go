@@ -2,62 +2,51 @@ package main
 
 import (
 	"errors"
-	"github.com/rs/xid"
-	"sync"
-)
-
-var (
-	list []Todo
-	mtx  sync.RWMutex
+	"gorm.io/gorm"
 )
 
 type Todo struct {
-	ID       string `json:"id"`
+	gorm.Model
 	Message  string `json:"message"`
 	Complete bool   `json:"complete"`
 }
 
-func Get() []Todo {
-	return list
+func Get() ([]Todo, error) {
+	var todos []Todo
+	result := DB.Find(&todos)
+	return todos, result.Error
 }
 
-func GetItem(id string) (*Todo, error) {
-	for i, t := range list {
-		if t.ID == id {
-			return &list[i], nil
-		}
+func GetItem(id uint) (*Todo, error) {
+	var todo Todo
+	result := DB.First(&todo, id)
+	if result.Error != nil {
+		return nil, errors.New("not found")
 	}
-	return nil, errors.New("not found")
+	return &todo, nil
 }
 
-func Add(message string) string {
-	t := Todo{ID: xid.New().String(), Message: message, Complete: false}
-	mtx.Lock()
-	list = append(list, t)
-	mtx.Unlock()
-	return t.ID
+func Add(message string) (*Todo, error) {
+	todo := Todo{Message: message, Complete: false}
+	result := DB.Create(&todo)
+	return &todo, result.Error
 }
 
-func Delete(id string) error {
-	mtx.Lock()
-	defer mtx.Unlock()
-	for i, t := range list {
-		if t.ID == id {
-			list = append(list[:i], list[i+1:]...)
-			return nil
-		}
+func Delete(id uint) error {
+	result := DB.Delete(&Todo{}, id)
+	if result.RowsAffected == 0 {
+		return errors.New("not found")
 	}
-	return errors.New("not found")
+	return result.Error
 }
 
-func Complete(id string) error {
-	mtx.Lock()
-	defer mtx.Unlock()
-	for i, t := range list {
-		if t.ID == id {
-			list[i].Complete = true
-			return nil
-		}
+func Complete(id uint) error {
+	var todo Todo
+	result := DB.First(&todo, id)
+	if result.Error != nil {
+		return errors.New("not found")
 	}
-	return errors.New("not found")
+	todo.Complete = true
+	DB.Save(&todo)
+	return nil
 }

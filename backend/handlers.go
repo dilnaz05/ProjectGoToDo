@@ -3,10 +3,16 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func GetTodoListHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, Get())
+	todos, err := Get()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch todos"})
+		return
+	}
+	c.JSON(http.StatusOK, todos)
 }
 
 func AddTodoHandler(c *gin.Context) {
@@ -17,13 +23,22 @@ func AddTodoHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 		return
 	}
-	id := Add(request.Message)
-	c.JSON(http.StatusCreated, gin.H{"id": id})
+	todo, err := Add(request.Message)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add todo"})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{"id": todo.ID})
 }
 
 func DeleteTodoHandler(c *gin.Context) {
-	id := c.Param("id")
-	if err := Delete(id); err != nil {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	if err := Delete(uint(id)); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
 		return
 	}
@@ -31,14 +46,12 @@ func DeleteTodoHandler(c *gin.Context) {
 }
 
 func CompleteTodoHandler(c *gin.Context) {
-	var request struct {
-		ID string `json:"id"`
-	}
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
 		return
 	}
-	if err := Complete(request.ID); err != nil {
+	if err := Complete(uint(id)); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
 		return
 	}
@@ -46,8 +59,13 @@ func CompleteTodoHandler(c *gin.Context) {
 }
 
 func GetTodoItemHandler(c *gin.Context) {
-	id := c.Param("id")
-	todo, err := GetItem(id)
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	todo, err := GetItem(uint(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
 		return

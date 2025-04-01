@@ -5,6 +5,7 @@ import (
 )
 
 func main() {
+	InitDB()
 	r := gin.Default()
 
 	r.GET("/todo", GetTodoListHandler)
