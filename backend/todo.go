@@ -50,3 +50,15 @@ func Complete(id uint) error {
 	DB.Save(&todo)
 	return nil
 }
+
+func Update(id uint, message string, complete bool) (*Todo, error) {
+	var todo Todo
+	result := DB.First(&todo, id)
+	if result.Error != nil {
+		return errors.New("not found")
+	}
+	todo.Message = message
+	todo.Complete = complete
+	DB.Save(&todo)
+	return &todo, nill
+}

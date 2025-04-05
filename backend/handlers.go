@@ -72,3 +72,28 @@ func GetTodoItemHandler(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, todo)
 }
+
+func UpdateTodoItemHandler(c *gin.context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	var request struct {
+		Message  string `json:"message"`
+		Complete bool   `json:"complete"`
+	}
+
+	if err := c.ShouldBindJSON(&request); err != nill {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	updatedTodo, err := Update(uint(id), request.Message, request.Complete)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
+		return
+	}
+	c.JSON(http.StatusOK, updatedTodo)
+}
