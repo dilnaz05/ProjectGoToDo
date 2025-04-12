@@ -1,5 +1,5 @@
 This project is a simple TODO List web application built using Golang (Gin) + PostgreSQL.  
-Users can add, complete, delete, and view tasks.
+Users can add, complete, delete, update and view tasks.
 
  
 Backend (Gin + Gorm + PostgreSQL):  
