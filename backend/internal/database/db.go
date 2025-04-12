@@ -1,10 +1,11 @@
-package main
+package database
 
 import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
+	"todo-app-backend/internal/services"
 )
 
 var DB *gorm.DB
@@ -19,7 +20,8 @@ func InitDB() {
 	fmt.Println("Database connection successful!")
 	DB = db
 
-	err = db.AutoMigrate(&Todo{})
+	//migration
+	err = db.AutoMigrate(&services.main{})
 	if err != nil {
 		log.Fatal("Migration error: ", err)
 	}
