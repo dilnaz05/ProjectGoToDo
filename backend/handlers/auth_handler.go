@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"todo-app-backend/internal/services"
+	"todo-app/backend/services"
 )
 
 func LoginHandler(c *gin.Context) {

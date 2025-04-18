@@ -1,8 +1,8 @@
 package services
 
 import (
-	"todo-app-backend/internal/db"
-	"todo-app-backend/internal/models"
+	"todo-app/backend/db"
+	"todo-app/backend/models"
 )
 
 func CreateTodo(message string) (*models.Todo, error) {

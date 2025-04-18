@@ -2,9 +2,9 @@ package services
 
 import (
 	"errors"
-	"todo-app-backend/internal/db"
-	"todo-app-backend/internal/models"
-	"todo-app-backend/internal/utils"
+	"todo-app/backend/db"
+	"todo-app/backend/models"
+	"todo-app/backend/utils"
 )
 
 func Login(username, password string) (string, error) {

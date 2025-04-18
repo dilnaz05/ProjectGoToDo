@@ -1,10 +1,9 @@
 package middleware
-package middleware
 
 import (
-"github.com/gin-gonic/gin"
-"net/http"
-"todo-app-backend/internal/utils"
+	"github.com/gin-gonic/gin"
+	"net/http"
+	"todo-app/backend/utils"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
