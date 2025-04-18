@@ -8,24 +8,24 @@ import (
 )
 
 func main() {
-	db.InitDB() // ✅
+	db.InitDB()
 
 	r := gin.Default()
 
 	api := r.Group("/api")
 	{
-		api.POST("/register", handlers.RegisterHandler) // ✅
-		api.POST("/login", handlers.LoginHandler)       // ✅
+		api.POST("/register", handlers.RegisterHandler)
+		api.POST("/login", handlers.LoginHandler)
 
 		protected := api.Group("/")
-		protected.Use(middleware.AuthMiddleware()) // ✅
+		protected.Use(middleware.AuthMiddleware())
 
 		{
-			protected.GET("/me", handlers.MeHandler)                   // ✅
-			protected.GET("/todos", handlers.GetTodosHandler)          // ✅
-			protected.POST("/todos", handlers.CreateTodoHandler)       // ✅
-			protected.PUT("/todos/:id", handlers.UpdateTodoHandler)    // ✅
-			protected.DELETE("/todos/:id", handlers.DeleteTodoHandler) // ✅
+			protected.GET("/me", handlers.MeHandler)
+			protected.GET("/todos", handlers.GetTodosHandler)
+			protected.POST("/todos", handlers.CreateTodoHandler)
+			protected.PUT("/todos/:id", handlers.UpdateTodoHandler)
+			protected.DELETE("/todos/:id", handlers.DeleteTodoHandler)
 		}
 	}
 
