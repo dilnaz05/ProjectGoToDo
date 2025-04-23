@@ -8,14 +8,12 @@ import (
 )
 
 func CreateTodoHandler(c *gin.Context) {
-	// Авторизацияланған пайдаланушының userID алу
 	userID, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
 		return
 	}
 
-	// Сұраныстан Todo мәліметтерін алу
 	var req struct {
 		Message string `json:"message"`
 	}
@@ -24,7 +22,6 @@ func CreateTodoHandler(c *gin.Context) {
 		return
 	}
 
-	// Пайдаланушыға тиісті Todo жасау
 	todo, err := services.CreateTodo(userID.(uint), req.Message)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create todo"})
@@ -35,14 +32,12 @@ func CreateTodoHandler(c *gin.Context) {
 }
 
 func GetTodosHandler(c *gin.Context) {
-	// Авторизацияланған пайдаланушының userID алу
 	userID, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
 		return
 	}
 
-	// Пайдаланушының Todo-ларын алу
 	todos, err := services.GetTodosByUserID(userID.(uint))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch todos"})
@@ -53,17 +48,14 @@ func GetTodosHandler(c *gin.Context) {
 }
 
 func UpdateTodoHandler(c *gin.Context) {
-	// Авторизацияланған пайдаланушының userID алу
 	userID, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
 		return
 	}
 
-	// URL параметрінен Todo ID алу
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	// Сұраныстан жаңа мәліметтерді алу
 	var req struct {
 		Message  string `json:"message"`
 		Complete bool   `json:"complete"`
@@ -73,7 +65,6 @@ func UpdateTodoHandler(c *gin.Context) {
 		return
 	}
 
-	// Пайдаланушыға тиісті Todo жаңарту
 	todo, err := services.UpdateTodo(userID.(uint), uint(id), req.Message, req.Complete)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update todo"})
@@ -84,17 +75,14 @@ func UpdateTodoHandler(c *gin.Context) {
 }
 
 func DeleteTodoHandler(c *gin.Context) {
-	// Авторизацияланған пайдаланушының userID алу
 	userID, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
 		return
 	}
 
-	// URL параметрінен Todo ID алу
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	// Пайдаланушыға тиісті Todo жою
 	err := services.DeleteTodo(userID.(uint), uint(id))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete todo"})

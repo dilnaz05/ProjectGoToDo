@@ -16,7 +16,6 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// "Bearer ..." форматынан тек токенді бөліп алу
 		var token string
 		_, err := fmt.Sscanf(authHeader, "Bearer %s", &token)
 		if err != nil {

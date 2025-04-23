@@ -5,7 +5,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
-	"todo-app/backend/models"
+	"os/exec"
 )
 
 var DB *gorm.DB
@@ -20,9 +20,21 @@ func InitDB() {
 	fmt.Println("Database connection successful!")
 	DB = db
 
-	err = db.AutoMigrate(&models.User{}, &models.Todo{})
+	runSQLMigration()
+	//err = db.AutoMigrate(&models.User{}, &models.Todo{})
+}
 
+func runSQLMigration() {
+	cmd := exec.Command(
+		"C:\\Program Files\\PostgreSQL\\16\\bin\\psql.exe",
+		"-U", "postgres",
+		"-d", "tododb",
+		"-f", "C:\\Users\\Lenovo\\GolandProjects\\todo-app\\backend\\db\\migration\\init_schema.sql",
+	)
+
+	output, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Fatal("Migration error: ", err)
+		log.Fatalf("SQL migration error: %s\n%s", err, output)
 	}
+	fmt.Println("SQL migration applied successfully")
 }
