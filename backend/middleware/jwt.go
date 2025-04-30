@@ -16,15 +16,15 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		var token string
-		_, err := fmt.Sscanf(authHeader, "Bearer %s", &token)
+		var tokenString string
+		_, err := fmt.Sscanf(authHeader, "Bearer %s", &tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token format"})
 			c.Abort()
 			return
 		}
 
-		userID, err := utils.ParseJWT(token)
+		userID, role, err := utils.ParseJWT(tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 			c.Abort()
@@ -32,6 +32,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		c.Set("userID", userID)
+		c.Set("userRole", role)
 		c.Next()
 	}
 }

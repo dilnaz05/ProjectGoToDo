@@ -29,5 +29,13 @@ func main() {
 		}
 	}
 
+	admin := api.Group("/admin")
+	admin.Use(middleware.AuthMiddleware(), middleware.RoleMiddleware("admin"))
+
+	admin.GET("/dashboard", handlers.AdminDashboard)
+	admin.GET("/users", handlers.GetAllUsers)
+	admin.GET("/todos", handlers.GetAllTodos)
+	admin.DELETE("/user/:id", handlers.DeleteUser)
+
 	r.Run(":8080")
 }
