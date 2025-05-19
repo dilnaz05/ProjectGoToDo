@@ -36,8 +36,6 @@ Admins have all `user` privileges plus:
 
 ---
 
-### Tech Stack
-
 ### Backend:
 - **Gin** – HTTP web framework for routing and middleware
 - **Gorm** – ORM for PostgreSQL database interactions
