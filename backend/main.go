@@ -1,11 +1,20 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"todo-app/backend/db"
 	"todo-app/backend/handlers"
 	"todo-app/backend/middleware"
 )
+
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("❌ .env файл жүктелмеді:", err)
+	}
+}
 
 func main() {
 	db.InitDB()
